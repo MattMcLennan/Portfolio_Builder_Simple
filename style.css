@@ -1,0 +1,20 @@
+html, body {
+  width: 100%;
+  margin: 0 auto;
+  
+}
+
+.banner {
+  background-color: #0066CC;
+  height: 100px;
+  border-bottom: solid 2px black;
+}
+
+h1 {
+  font-weight: bold;
+  margin-left: 5%;
+  font-size: 40px;
+  font-family: Georgia, serif; 
+  color: #CFCFCF;
+  position: absolute;
+}
