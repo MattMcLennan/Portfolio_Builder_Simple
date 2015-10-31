@@ -14,3 +14,15 @@
 //= require jquery_ujs
 //= require turbolinks
 //= require_tree .
+
+$(function() {
+  
+
+  $('form').click(function (event) {
+    event.preventDefault();
+  });
+
+
+
+
+});
