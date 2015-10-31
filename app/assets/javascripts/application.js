@@ -25,6 +25,7 @@ $(function() {
   });
   
   var getStocks = function()  {
+    // debugger
     var stocks = $('input[name="analyze-portfolio"]').val();
     // Sending the whole string back to ruby so I can parse it there
   }
