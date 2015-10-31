@@ -11,12 +11,31 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151031165209) do
+ActiveRecord::Schema.define(version: 20151031171016) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
   create_table "portfolios", force: true do |t|
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "stocks", force: true do |t|
+    t.integer  "price"
+    t.integer  "EV_to_EBITDA"
+    t.integer  "P_to_E"
+    t.integer  "P_to_B"
+    t.integer  "P_to_FCF"
+    t.integer  "marketcap"
+    t.integer  "ROE"
+    t.integer  "ROA"
+    t.integer  "ROCI"
+    t.integer  "EV_to_FCF"
+    t.string   "country"
+    t.string   "sector"
+    t.string   "company_name"
+    t.string   "ticker_symbol"
     t.datetime "created_at"
     t.datetime "updated_at"
   end

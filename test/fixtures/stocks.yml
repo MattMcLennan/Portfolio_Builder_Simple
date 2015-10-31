@@ -1,0 +1,33 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  price: 1
+  EV_to_EBITDA: 1
+  P_to_E: 1
+  P_to_B: 1
+  P_to_FCF: 1
+  marketcap: 1
+  ROE: 1
+  ROA: 1
+  ROCI: 1
+  EV_to_FCF: 1
+  country: MyString
+  sector: MyString
+  company_name: MyString
+  ticker_symbol: MyString
+
+two:
+  price: 1
+  EV_to_EBITDA: 1
+  P_to_E: 1
+  P_to_B: 1
+  P_to_FCF: 1
+  marketcap: 1
+  ROE: 1
+  ROA: 1
+  ROCI: 1
+  EV_to_FCF: 1
+  country: MyString
+  sector: MyString
+  company_name: MyString
+  ticker_symbol: MyString

@@ -1,5 +1,7 @@
 Rails.application.routes.draw do
 
+  resources :stocks
+
   root 'portfolios#index'
 
   resources :portfolios, only: [:index]

@@ -1,0 +1,51 @@
+<h1>Listing stocks</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>Price</th>
+      <th>Ev to ebitda</th>
+      <th>P to e</th>
+      <th>P to b</th>
+      <th>P to fcf</th>
+      <th>Marketcap</th>
+      <th>Roe</th>
+      <th>Roa</th>
+      <th>Roci</th>
+      <th>Ev to fcf</th>
+      <th>Country</th>
+      <th>Sector</th>
+      <th>Company name</th>
+      <th>Ticker symbol</th>
+      <th colspan="3"></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @stocks.each do |stock| %>
+      <tr>
+        <td><%= stock.price %></td>
+        <td><%= stock.EV_to_EBITDA %></td>
+        <td><%= stock.P_to_E %></td>
+        <td><%= stock.P_to_B %></td>
+        <td><%= stock.P_to_FCF %></td>
+        <td><%= stock.marketcap %></td>
+        <td><%= stock.ROE %></td>
+        <td><%= stock.ROA %></td>
+        <td><%= stock.ROCI %></td>
+        <td><%= stock.EV_to_FCF %></td>
+        <td><%= stock.country %></td>
+        <td><%= stock.sector %></td>
+        <td><%= stock.company_name %></td>
+        <td><%= stock.ticker_symbol %></td>
+        <td><%= link_to 'Show', stock %></td>
+        <td><%= link_to 'Edit', edit_stock_path(stock) %></td>
+        <td><%= link_to 'Destroy', stock, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+
+<%= link_to 'New Stock', new_stock_path %>
