@@ -16,13 +16,17 @@
 //= require_tree .
 
 $(function() {
-  
+  var portfolio;
 
   $('form').click(function (event) {
     event.preventDefault();
+    getStocks();
+
   });
-
-
-
-
+  
+  var getStocks = function()  {
+    debugger
+    console.log($('input[name="analyze-portfolio"]').val());
+  }
 });
+
