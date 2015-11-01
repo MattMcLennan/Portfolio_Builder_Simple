@@ -12,6 +12,10 @@ class PortfoliosController < ApplicationController
   def show
   end
 
+  def analyze
+    render json: "Hello"
+  end
+
   # GET /portfolios/new
   def new
     @portfolio = Portfolio.new

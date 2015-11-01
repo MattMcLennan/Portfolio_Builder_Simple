@@ -1,8 +1,10 @@
 Rails.application.routes.draw do
 
-  resources :stocks
-
   root 'portfolios#index'
+  
+  post 'portfolios/analyze', to: 'portfolios#analyze'
+  
+  resources :stocks
 
   resources :portfolios, only: [:index]
 

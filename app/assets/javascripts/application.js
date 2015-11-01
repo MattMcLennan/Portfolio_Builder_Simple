@@ -20,14 +20,26 @@ $(function() {
 
   $('form').click(function (event) {
     event.preventDefault();
-    getStocks();
+    
+    $.ajax({
+      url: "portfolios/analyze",
+      success: success,
+      error: error,
+      type: 'post',
+      data: { 
+        stocks: $('input[name="analyze-portfolio"]').val()},
+      dataType: "text"
+    })
+
+    function success(results) {
+      debugger
+    }
+
+    function error() {
+      debugger
+    }
 
   });
   
-  var getStocks = function()  {
-    // debugger
-    var stocks = $('input[name="analyze-portfolio"]').val();
-    // Sending the whole string back to ruby so I can parse it there
-  }
 });
 
