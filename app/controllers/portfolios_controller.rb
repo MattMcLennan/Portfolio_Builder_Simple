@@ -13,7 +13,8 @@ class PortfoliosController < ApplicationController
   end
 
   def analyze
-    render json: "Hello"
+    
+    render json: 
   end
 
   # GET /portfolios/new
