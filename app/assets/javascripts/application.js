@@ -18,20 +18,21 @@
 $(function() {
   var portfolio;
 
-  $('form').click(function (event) {
+  $('form').submit(function (event) {
     event.preventDefault();
     
     $.ajax({
-      url: "portfolios/analyze",
+      url: "portfolio/analyze",
       success: success,
       error: error,
       type: 'post',
       data: { 
         stocks: $('input[name="analyze-portfolio"]').val()},
-      dataType: "text"
+      dataType: "json"
     })
 
     function success(results) {
+      console.log(results);
       debugger
     }
 

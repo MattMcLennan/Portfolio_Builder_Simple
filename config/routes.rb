@@ -1,12 +1,9 @@
 Rails.application.routes.draw do
 
-  root 'portfolios#index'
+  root 'portfolio#index'
   
-  post 'portfolios/analyze', to: 'portfolios#analyze'
-  
-  resources :stocks
+  post 'portfolio/analyze', to: 'portfolio#analyze'
 
-  resources :portfolios, only: [:index]
 
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
