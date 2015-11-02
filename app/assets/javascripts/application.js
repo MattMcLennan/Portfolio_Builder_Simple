@@ -49,6 +49,22 @@ $(function() {
         roe.push(results[i]["roe"]);
       }
 
+      // These values will return the averages for their respective data calls
+      var ebitda_margin_avg, ev_ebitda_avg, ev_fcf_avg, mkt_cap_avg;
+      var net_profit_margin_avg, p_b_avg, p_e_avg, p_fcf_avg, roa_avg, roci_avg, roe_avg;
+
+      ebitda_margin_avg = calcAverages(ebitda_margin);
+      ev_ebitda_avg = calcAverages(ev_ebitda);
+      ev_fcf_avg = calcAverages(ev_fcf);
+      mkt_cap_avg = calcAverages(mkt_cap);
+      net_profit_margin_avg = calcAverages(net_profit_margin);
+      p_b_avg = calcAverages(p_b);
+      p_e_avg = calcAverages(p_e);
+      p_fcf_avg = calcAverages(p_fcf);
+      roa_avg = calcAverages(roa);
+      roci_avg = calcAverages(roci);
+      roe_avg = calcAverages(roe);
+
       debugger
     }
 
@@ -62,8 +78,17 @@ $(function() {
 });
 
 
-function calcAverages(results) {
+function calcAverages(fundamental_data) {
+  var total = 0, zeros = 0;
 
+  for (var i = 0; i < fundamental_data.length; i++) {
+    total += fundamental_data[i];
+    if (fundamental_data[i] === 0) {
+      zeros += 1;
+    }
+  }
+
+  return total / (fundamental_data.length - zeros);
 }
 
 
