@@ -37,7 +37,9 @@ $(function() {
     }
 
     function error() {
-      debugger
+      alert("An error has occured with the API call."
+        + "Please make sure all of the stocks listed have the correct exchange"
+        + " and the correct ticker. Ex: exchange:ticker, NYSE:BBY, TSX:BMO")
     }
 
   });

@@ -24,7 +24,6 @@ class PortfolioController < ApplicationController
       @stock = {}
       url = "http://ca.advfn.com/stock-market/" + pair[0] + "/" + pair[1] + "/financials"
       webscrape(url)
-      binding.pry
     end
 
     render :json => @portfolio_analyze
@@ -43,30 +42,30 @@ class PortfolioController < ApplicationController
       elsif i.text == "Industry Information: "
         @stock[:industry] = i.next.text.match(/[A-Z]+/).to_s
       elsif i.text == "PE Ratio - LTM"
-        @stock[:p_e_ratio_LTM] = i.next.text
+        @stock[:p_e_ratio_LTM] = i.next.text.to_f
       elsif i.text == "Market Capitalisation"
         if i.next.next.text == "mil"
           val = i.next.text
           @stock[:mkt_cap] = val.gsub(/[^\d\.]/, '').to_f * 1_000_000
         end
       elsif i.text == "Enterprise Value (EV)/EBITDA"
-        @stock[:ev_ebitda] = i.next.text
+        @stock[:ev_ebitda] = i.next.text.to_f
       elsif i.text == "Enterprise Value (EV)/Free Cash Flow"
-        @stock[:ev_fcf] = i.next.text
+        @stock[:ev_fcf] = i.next.text.to_f
       elsif i.text == "Price/Book Ratio - LTM"
-        @stock[:p_b] = i.next.text
+        @stock[:p_b] = i.next.text.to_f
       elsif i.text == "Price/Free Cash Flow Ratio - LTM"
-        @stock[:p_fcf] = i.next.text
+        @stock[:p_fcf] = i.next.text.to_f
       elsif i.text == "Return on Equity (ROE)"
-        @stock[:roe] = i.next.text
+        @stock[:roe] = i.next.text.to_f
       elsif i.text == "Return on Capital Invested (ROCI)"
-        @stock[:roci] = i.next.text
+        @stock[:roci] = i.next.text.to_f
       elsif i.text == "Return on Assets (ROA)"
-        @stock[:roa] = i.next.text
+        @stock[:roa] = i.next.text.to_f
       elsif i.text == "EBITDA Margin - LTM"
-        @stock[:ebitda_margin] = i.next.text
+        @stock[:ebitda_margin] = i.next.text.to_f
       elsif i.text == "Net Profit Margin"
-        @stock[:net_profit_margin] = i.next.text
+        @stock[:net_profit_margin] = i.next.text.to_f
       end
     end
     
