@@ -31,7 +31,7 @@ $(function() {
     })
 
     function success(results) {
-      console.log(results);
+      console.log(sortResults(results));
       debugger
     }
 
@@ -46,23 +46,24 @@ $(function() {
 
 function sortResults(results) {
   var ebitda_margin = [], ev_ebitda = [], ev_fcf =[], industry =[], mkt_cap =[];
-  var p_b = [], p_e = [], p_fcf = [], roa = [], roci = [], roe = [];
+  var net_profit_margin = [], p_b = [], p_e = [], p_fcf = [], roa = [], roci = [], roe = [];
 
   for (var i = 0; i < results.length; i++) {
-    ebitda_margin
-    ev_ebitda
-    ev_fcf
-    industry
-    mkt_cap
-    p_b
-    p_e
-    p_fcf
-    roa
-    roci
-    roe  
+    ebitda_margin.push(results[i]["ebitda_margin"]);
+    ev_ebitda.push(results[i]["ev_ebitda"]);
+    ev_fcf.push(results[i]["ev_fcf"]);
+    industry.push(results[i]["industry"]);
+    mkt_cap.push(results[i]["mkt_cap"]);
+    net_profit_margin.push(results[i]["net_profit_margin"]);
+    p_b.push(results[i]["p_b"]);
+    p_e.push(results[i]["p_e_rtio_LTM"]);
+    p_fcf.push(results[i]["p_fcf"]);
+    roa.push(results[i]["roa"]);
+    roci.push(results[i]["roci"]);
+    roe.push(results[i]["roe"]);
   }
 
-
+  return ebitda_margin, ev_ebitda, ev_fcf, industry, mkt_cap, net_profit_margin, p_b, p_e, p_fcf, roa, roci, roe
 }
 
 function calcAverages(results) {
