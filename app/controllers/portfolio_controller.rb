@@ -44,10 +44,13 @@ class PortfolioController < ApplicationController
       elsif i.text == "PE Ratio - LTM"
         @stock[:p_e_ratio_LTM] = i.next.text.to_f
       elsif i.text == "Market Capitalisation"
-        if i.next.next.text == "mil"
-          val = i.next.text
-          @stock[:mkt_cap] = val.gsub(/[^\d\.]/, '').to_f * 1_000_000
-        end
+        val = i.next.text
+        @stock[:mkt_cap] = val.gsub(/[^\d\.]/, '').to_f * 1_000_000
+        # Removed the following code since all values are in the million data type
+        # if i.next.next.text == "mil"
+        #   val = i.next.text
+        #   @stock[:mkt_cap] = val.gsub(/[^\d\.]/, '').to_f * 1_000_000
+        # end
       elsif i.text == "Enterprise Value (EV)/EBITDA"
         @stock[:ev_ebitda] = i.next.text.to_f
       elsif i.text == "Enterprise Value (EV)/Free Cash Flow"
