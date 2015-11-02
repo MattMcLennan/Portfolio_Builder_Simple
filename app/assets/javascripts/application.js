@@ -16,7 +16,6 @@
 //= require_tree .
 
 $(function() {
-  var portfolio;
 
   $('form').submit(function (event) {
     event.preventDefault();
@@ -43,6 +42,47 @@ $(function() {
     }
 
   });
-  
 });
+
+function sortResults(results) {
+  var ebitda_margin = [], ev_ebitda = [], ev_fcf =[], industry =[], mkt_cap =[];
+  var p_b = [], p_e = [], p_fcf = [], roa = [], roci = [], roe = [];
+
+  for (var i = 0; i < results.length; i++) {
+    ebitda_margin
+    ev_ebitda
+    ev_fcf
+    industry
+    mkt_cap
+    p_b
+    p_e
+    p_fcf
+    roa
+    roci
+    roe  
+  }
+
+
+}
+
+function calcAverages(results) {
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
