@@ -68,7 +68,7 @@ $(function() {
       roci_avg = calcAverages(roci);
       roe_avg = calcAverages(roe);
 
-      // sectorChart(industry);
+      sectorChart(industry);
       mktCapCharts(mkt_cap);
       valuationCharts(p_b_avg, p_e_avg, p_fcf_avg, ev_fcf_avg, ev_ebitda_avg);
       returnRatioCharts(roa_avg, roci_avg, roe_avg);
@@ -148,106 +148,100 @@ function mktCapCharts(mkt_cap) {
       colorByPoint: true,
       data: [{
         name: "Mega Cap",
-        y: megaCap.length / mkt_cap.length
+        y: (megaCap.length / mkt_cap.length) * 100
       }, {
         name: "Large Cap",
-        y: largeCap.length / mkt_cap.length
+        y: (largeCap.length / mkt_cap.length) * 100
       }, {
         name: "Mid Cap",
-        y: midCap.length / mkt_cap.length
+        y: (midCap.length / mkt_cap.length) * 100
       }, {
         name: "Small Cap",
-        y: smallCap.length / mkt_cap.length
+        y: (smallCap.length / mkt_cap.length) * 100
       }, {
         name: "Micro Cap",
-        y: microCap.length / mkt_cap.length      
+        y: (microCap.length / mkt_cap.length) * 100      
       }, {
         name: "Nano Cap",
-        y: nanoCap.length / mkt_cap.length     
+        y: (nanoCap.length / mkt_cap.length) * 100     
       }]
     }]
   });
 }
 
-// function sectorChart(industry) {
-//   // Industry is coming in as an array of strings
 
-//   industryGet = [];
+function sectorChart(industry) {
+  var sectorList = {};
 
-//   for (var i = 0; i < industry.length; i++) {
-//     // Need to basically sum all of the times it is the same string and store it into an object
-//     // May have to essentially create a duplicate for loop
-//     if (industry[i] is in industryGet["name"]) {
-//       add value (50) to that industry amount
-//     } else {
-//       industryGet.push({
-//         name: industry[i],
-//         y: 50
-//     }
-//   }
+  for (var i = 0; i < industry.length; i++) {
+    if (industry[i] in sectorList) {
+      sectorList[String(industry[i])] += 1;
+    } else {
+      sectorList[String(industry[i])] = 1;
+    }
+  }
 
-//   darkTheme();
+  var data = [];
 
-//   // Radialize the colors
-//       Highcharts.getOptions().colors = Highcharts.map(Highcharts.getOptions().colors, function (color) {
-//           return {
-//               radialGradient: {
-//                   cx: 0.5,
-//                   cy: 0.3,
-//                   r: 0.7
-//               },
-//               stops: [
-//                   [0, color],
-//                   [1, Highcharts.Color(color).brighten(-0.3).get('rgb')] // darken
-//               ]
-//           };
-//       });
+  for (sector in sectorList) {
+    data.push({ 
+      name: String(sector),
+      y: (sectorList[sector]/industry.length) * 100
+    });
+  }
 
-//       // Build the chart
-//       $('#container-mktCap').highcharts({
-//           chart: {
-//               plotBackgroundColor: null,
-//               plotBorderWidth: null,
-//               plotShadow: false,
-//               type: 'pie'
-//           },
-//           title: {
-//               text: 'Portfolio Sector Exposure'
-//           },
-//           tooltip: {
-//               pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
-//           },
-//           plotOptions: {
-//               pie: {
-//                   allowPointSelect: true,
-//                   cursor: 'pointer',
-//                   dataLabels: {
-//                       enabled: true,
-//                       format: '<b>{point.name}</b>: {point.percentage:.1f} %',
-//                       style: {
-//                           color: (Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black'
-//                       },
-//                       connectorColor: 'silver'
-//                   }
-//               }
-//           },
-//           series: [{
-//               name: "Sector",
-//               data: 
+  darkTheme();
 
+  // Radialize the colors
+  Highcharts.getOptions().colors = Highcharts.map(Highcharts.getOptions().colors, function(color) {
+    return {
+      radialGradient: {
+        cx: 0.5,
+        cy: 0.3,
+        r: 0.7
+      },
+      stops: [
+        [0, color],
+        [1, Highcharts.Color(color).brighten(-0.3).get('rgb')] // darken
+      ]
+    };
+  });
 
-
-
-
-//               [
-//                   {name: "Return on Equity (ROE)", y: industry[]},
-//                   {name: "Return on Capital Invested (ROCI)", y: industry[]},
-//                   {name: "Return on Assets (ROA)", y: industry[]}
-//               ]
-//           }]
-//       });
-// }
-
+  // Build the chart
+  $('#container-sector').highcharts({
+    chart: {
+      plotBackgroundColor: null,
+      plotBorderWidth: null,
+      plotShadow: false,
+      type: 'pie'
+    },
+    title: {
+      text: 'Portfolio Sector Exposure'
+    },
+    tooltip: {
+      pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
+    },
+    plotOptions: {
+      pie: {
+        allowPointSelect: true,
+        cursor: 'pointer',
+        dataLabels: {
+          enabled: true,
+          format: '<b>{point.name}</b>: {point.percentage:.1f} %',
+          style: {
+            color: (Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black'
+          },
+          connectorColor: 'silver'
+        }
+      }
+    },
+    series: [{
+      name: "Marketcap",
+      colorByPoint: true,
+      data: data
+    }]
+  });
+} 
 
 function darkTheme() {
   /**
