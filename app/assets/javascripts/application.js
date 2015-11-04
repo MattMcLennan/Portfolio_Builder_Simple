@@ -15,12 +15,7 @@
 //= require turbolinks
 //= require_tree .
 
-$(function() {
-  sectorChart();
-  mktCapCharts();
-  valuationCharts();
-  marginCharts();
-  returnRatioCharts();
+$(function() {  
 
   $('form').submit(function (event) {
     event.preventDefault();
@@ -36,16 +31,15 @@ $(function() {
     })
 
     function success(results) {
-      var ebitda_margin = [], ev_ebitda = [], ev_fcf =[], industry =[], mkt_cap =[];
-      var net_profit_margin = [], p_b = [], p_e = [], p_fcf = [], roa = [], roci = [], roe = [];
+
+      var ev_ebitda = [], ev_fcf =[], industry =[], mkt_cap =[];
+      var p_b = [], p_e = [], p_fcf = [], roa = [], roci = [], roe = [];
 
       for (var i = 0; i < results.length; i++) {
-        ebitda_margin.push(results[i]["ebitda_margin"]);
         ev_ebitda.push(results[i]["ev_ebitda"]);
         ev_fcf.push(results[i]["ev_fcf"]);
         industry.push(results[i]["industry"]);
         mkt_cap.push(results[i]["mkt_cap"]);
-        net_profit_margin.push(results[i]["net_profit_margin"]);
         p_b.push(results[i]["p_b"]);
         p_e.push(results[i]["p_e_ratio_LTM"]);
         p_fcf.push(results[i]["p_fcf"]);
@@ -54,13 +48,18 @@ $(function() {
         roe.push(results[i]["roe"]);
       }
 
-      // These values will return the averages for their respective data calls
-      var ebitda_margin_avg, ev_ebitda_avg, ev_fcf_avg, mkt_cap_avg;
-      var net_profit_margin_avg, p_b_avg, p_e_avg, p_fcf_avg, roa_avg, roci_avg, roe_avg;
+      // Used to check if any of the stocks entered do not exist
+      for (var i = 0; i < ev_ebitda.length; i++) {
+        if (ev_ebitda[i] === undefined) {
+          return error();
+        }
+      }
 
-      ebitda_margin_avg = calcAverages(ebitda_margin);
+      // These values will return the averages for their respective data calls
+      var ev_ebitda_avg, ev_fcf_avg, mkt_cap_avg;
+      var p_b_avg, p_e_avg, p_fcf_avg, roa_avg, roci_avg, roe_avg;
+
       ev_ebitda_avg = calcAverages(ev_ebitda);
-      net_profit_margin_avg = calcAverages(net_profit_margin);
       ev_fcf_avg = calcAverages(ev_fcf);
       p_b_avg = calcAverages(p_b);
       p_e_avg = calcAverages(p_e);
@@ -69,7 +68,11 @@ $(function() {
       roci_avg = calcAverages(roci);
       roe_avg = calcAverages(roe);
 
-      debugger
+      // sectorChart(industry);
+      mktCapCharts(mkt_cap);
+      valuationCharts(p_b_avg, p_e_avg, p_fcf_avg, ev_fcf_avg, ev_ebitda_avg);
+      returnRatioCharts(roa_avg, roci_avg, roe_avg);
+
     }
 
     function error() {
@@ -95,10 +98,29 @@ function calcAverages(fundamental_data) {
   return total / (fundamental_data.length - zeros);
 }
 
-function sectorChart() {
+function mktCapCharts(mkt_cap) {
   darkTheme();
 
-  $('#container-sector').highcharts({
+  var megaCap=[], largeCap=[], midCap=[], smallCap=[], microCap=[], nanoCap=[];
+
+  // Gathering different market cap buckets
+  for (var i = 0; i < mkt_cap.length; i++) {
+    if (mkt_cap[i] >= 200000000000) {
+      megaCap.push(mkt_cap[i]);
+    } else if (mkt_cap[i] >= 10000000000) {
+      largeCap.push(mkt_cap[i]);
+    } else if (mkt_cap[i] >= 2000000000) {
+      midCap.push(mkt_cap[i]);
+    } else if (mkt_cap[i] >= 300000000) {
+      smallCap.push(mkt_cap[i]);
+    } else if (mkt_cap[i] >= 50000000) {
+      microCap.push(mkt_cap[i]);
+    } else {
+      nanoCap.push(mkt_cap[i]);
+    }
+  }
+
+  $('#container-mktCap').highcharts({
     chart: {
       plotBackgroundColor: null,
       plotBorderWidth: null,
@@ -106,7 +128,7 @@ function sectorChart() {
       type: 'pie'
     },
     title: {
-      text: 'Browser market shares January, 2015 to May, 2015'
+      text: 'Portfolio Marketcap Profile'
     },
     tooltip: {
       pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
@@ -122,96 +144,109 @@ function sectorChart() {
       }
     },
     series: [{
-      name: "Brands",
+      name: "Marketcap",
       colorByPoint: true,
       data: [{
-        name: "Microsoft Internet Explorer",
-        y: 56.33
+        name: "Mega Cap",
+        y: megaCap.length / mkt_cap.length
       }, {
-        name: "Chrome",
-        y: 24.03,
-        sliced: true,
-        selected: true
+        name: "Large Cap",
+        y: largeCap.length / mkt_cap.length
       }, {
-        name: "Firefox",
-        y: 10.38
+        name: "Mid Cap",
+        y: midCap.length / mkt_cap.length
       }, {
-        name: "Safari",
-        y: 4.77
+        name: "Small Cap",
+        y: smallCap.length / mkt_cap.length
       }, {
-        name: "Opera",
-        y: 0.91
+        name: "Micro Cap",
+        y: microCap.length / mkt_cap.length      
       }, {
-          name: "Proprietary or Undetectable",
-          y: 0.2
-        }]
+        name: "Nano Cap",
+        y: nanoCap.length / mkt_cap.length     
+      }]
     }]
   });
 }
 
-function mktCapCharts() {
-  darkTheme();
+// function sectorChart(industry) {
+//   // Industry is coming in as an array of strings
 
-  // Radialize the colors
-      Highcharts.getOptions().colors = Highcharts.map(Highcharts.getOptions().colors, function (color) {
-          return {
-              radialGradient: {
-                  cx: 0.5,
-                  cy: 0.3,
-                  r: 0.7
-              },
-              stops: [
-                  [0, color],
-                  [1, Highcharts.Color(color).brighten(-0.3).get('rgb')] // darken
-              ]
-          };
-      });
+//   industryGet = [];
 
-      // Build the chart
-      $('#container-mktCap').highcharts({
-          chart: {
-              plotBackgroundColor: null,
-              plotBorderWidth: null,
-              plotShadow: false,
-              type: 'pie'
-          },
-          title: {
-              text: 'Browser market shares. January, 2015 to May, 2015'
-          },
-          tooltip: {
-              pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
-          },
-          plotOptions: {
-              pie: {
-                  allowPointSelect: true,
-                  cursor: 'pointer',
-                  dataLabels: {
-                      enabled: true,
-                      format: '<b>{point.name}</b>: {point.percentage:.1f} %',
-                      style: {
-                          color: (Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black'
-                      },
-                      connectorColor: 'silver'
-                  }
-              }
-          },
-          series: [{
-              name: "Brands",
-              data: [
-                  {name: "Microsoft Internet Explorer", y: 56.33},
-                  {
-                      name: "Chrome",
-                      y: 24.03,
-                      sliced: true,
-                      selected: true
-                  },
-                  {name: "Firefox", y: 10.38},
-                  {name: "Safari", y: 4.77}, {name: "Opera", y: 0.91},
-                  {name: "Proprietary or Undetectable", y: 0.2}
-              ]
-          }]
-      });
-}
+//   for (var i = 0; i < industry.length; i++) {
+//     // Need to basically sum all of the times it is the same string and store it into an object
+//     // May have to essentially create a duplicate for loop
+//     if (industry[i] is in industryGet["name"]) {
+//       add value (50) to that industry amount
+//     } else {
+//       industryGet.push({
+//         name: industry[i],
+//         y: 50
+//     }
+//   }
+
+//   darkTheme();
+
+//   // Radialize the colors
+//       Highcharts.getOptions().colors = Highcharts.map(Highcharts.getOptions().colors, function (color) {
+//           return {
+//               radialGradient: {
+//                   cx: 0.5,
+//                   cy: 0.3,
+//                   r: 0.7
+//               },
+//               stops: [
+//                   [0, color],
+//                   [1, Highcharts.Color(color).brighten(-0.3).get('rgb')] // darken
+//               ]
+//           };
+//       });
+
+//       // Build the chart
+//       $('#container-mktCap').highcharts({
+//           chart: {
+//               plotBackgroundColor: null,
+//               plotBorderWidth: null,
+//               plotShadow: false,
+//               type: 'pie'
+//           },
+//           title: {
+//               text: 'Portfolio Sector Exposure'
+//           },
+//           tooltip: {
+//               pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
+//           },
+//           plotOptions: {
+//               pie: {
+//                   allowPointSelect: true,
+//                   cursor: 'pointer',
+//                   dataLabels: {
+//                       enabled: true,
+//                       format: '<b>{point.name}</b>: {point.percentage:.1f} %',
+//                       style: {
+//                           color: (Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black'
+//                       },
+//                       connectorColor: 'silver'
+//                   }
+//               }
+//           },
+//           series: [{
+//               name: "Sector",
+//               data: 
+
+
+
+
+
+//               [
+//                   {name: "Return on Equity (ROE)", y: industry[]},
+//                   {name: "Return on Capital Invested (ROCI)", y: industry[]},
+//                   {name: "Return on Assets (ROA)", y: industry[]}
+//               ]
+//           }]
+//       });
+// }
 
 
 function darkTheme() {
@@ -431,779 +466,122 @@ function darkTheme() {
   Highcharts.setOptions(Highcharts.theme);
 }
 
-function valuationCharts() {
+function valuationCharts(p_b_avg, p_e_avg, p_fcf_avg, ev_fcf_avg, ev_ebitda_avg) {
+  darkTheme();
   // Create the chart
-     $('#container-valuation').highcharts({
-         chart: {
-             type: 'column'
-         },
-         title: {
-             text: 'Browser market shares. January, 2015 to May, 2015'
-         },
-         subtitle: {
-             text: 'Click the columns to view versions. Source: <a href="http://netmarketshare.com">netmarketshare.com</a>.'
-         },
-         xAxis: {
-             type: 'category'
-         },
-         yAxis: {
-             title: {
-                 text: 'Total percent market share'
-             }
+  $('#container-valuation').highcharts({
+    chart: {
+      type: 'column'
+    },
+    title: {
+      text: 'Valuation Ratios - Trailing Twelve Months'
+    },
+    subtitle: {
+      text: 'Click the columns to view versions. Source: <a href="http://netmarketshare.com">netmarketshare.com</a>.'
+    },
+    xAxis: {
+      type: 'category'
+    },
+    yAxis: {
+      title: {
+        text: 'Average Portfolio Valuation Metric'
+      }
 
-         },
-         legend: {
-             enabled: false
-         },
-         plotOptions: {
-             series: {
-                 borderWidth: 0,
-                 dataLabels: {
-                     enabled: true,
-                     format: '{point.y:.1f}%'
-                 }
-             }
-         },
+    },
+    legend: {
+      enabled: false
+    },
+    plotOptions: {
+      series: {
+        borderWidth: 0,
+        dataLabels: {
+          enabled: true,
+          format: '{point.y:.1f}'
+        }
+      }
+    },
 
-         tooltip: {
-             headerFormat: '<span style="font-size:11px">{series.name}</span><br>',
-             pointFormat: '<span style="color:{point.color}">{point.name}</span>: <b>{point.y:.2f}%</b> of total<br/>'
-         },
+    tooltip: {
+      headerFormat: '<span style="font-size:11px">{series.name}</span><br>',
+      pointFormat: '<span style="color:{point.color}">{point.name}</span>: <b>{point.y:.2f}%</b> of total<br/>'
+    },
 
-         series: [{
-             name: "Brands",
-             colorByPoint: true,
-             data: [{
-                 name: "Microsoft Internet Explorer",
-                 y: 56.33,
-                 drilldown: "Microsoft Internet Explorer"
-             }, {
-                 name: "Chrome",
-                 y: 24.03,
-                 drilldown: "Chrome"
-             }, {
-                 name: "Firefox",
-                 y: 10.38,
-                 drilldown: "Firefox"
-             }, {
-                 name: "Safari",
-                 y: 4.77,
-                 drilldown: "Safari"
-             }, {
-                 name: "Opera",
-                 y: 0.91,
-                 drilldown: "Opera"
-             }, {
-                 name: "Proprietary or Undetectable",
-                 y: 0.2,
-                 drilldown: null
-             }]
-         }],
-         drilldown: {
-             series: [{
-                 name: "Microsoft Internet Explorer",
-                 id: "Microsoft Internet Explorer",
-                 data: [
-                     [
-                         "v11.0",
-                         24.13
-                     ],
-                     [
-                         "v8.0",
-                         17.2
-                     ],
-                     [
-                         "v9.0",
-                         8.11
-                     ],
-                     [
-                         "v10.0",
-                         5.33
-                     ],
-                     [
-                         "v6.0",
-                         1.06
-                     ],
-                     [
-                         "v7.0",
-                         0.5
-                     ]
-                 ]
-             }, {
-                 name: "Chrome",
-                 id: "Chrome",
-                 data: [
-                     [
-                         "v40.0",
-                         5
-                     ],
-                     [
-                         "v41.0",
-                         4.32
-                     ],
-                     [
-                         "v42.0",
-                         3.68
-                     ],
-                     [
-                         "v39.0",
-                         2.96
-                     ],
-                     [
-                         "v36.0",
-                         2.53
-                     ],
-                     [
-                         "v43.0",
-                         1.45
-                     ],
-                     [
-                         "v31.0",
-                         1.24
-                     ],
-                     [
-                         "v35.0",
-                         0.85
-                     ],
-                     [
-                         "v38.0",
-                         0.6
-                     ],
-                     [
-                         "v32.0",
-                         0.55
-                     ],
-                     [
-                         "v37.0",
-                         0.38
-                     ],
-                     [
-                         "v33.0",
-                         0.19
-                     ],
-                     [
-                         "v34.0",
-                         0.14
-                     ],
-                     [
-                         "v30.0",
-                         0.14
-                     ]
-                 ]
-             }, {
-                 name: "Firefox",
-                 id: "Firefox",
-                 data: [
-                     [
-                         "v35",
-                         2.76
-                     ],
-                     [
-                         "v36",
-                         2.32
-                     ],
-                     [
-                         "v37",
-                         2.31
-                     ],
-                     [
-                         "v34",
-                         1.27
-                     ],
-                     [
-                         "v38",
-                         1.02
-                     ],
-                     [
-                         "v31",
-                         0.33
-                     ],
-                     [
-                         "v33",
-                         0.22
-                     ],
-                     [
-                         "v32",
-                         0.15
-                     ]
-                 ]
-             }, {
-                 name: "Safari",
-                 id: "Safari",
-                 data: [
-                     [
-                         "v8.0",
-                         2.56
-                     ],
-                     [
-                         "v7.1",
-                         0.77
-                     ],
-                     [
-                         "v5.1",
-                         0.42
-                     ],
-                     [
-                         "v5.0",
-                         0.3
-                     ],
-                     [
-                         "v6.1",
-                         0.29
-                     ],
-                     [
-                         "v7.0",
-                         0.26
-                     ],
-                     [
-                         "v6.2",
-                         0.17
-                     ]
-                 ]
-             }, {
-                 name: "Opera",
-                 id: "Opera",
-                 data: [
-                     [
-                         "v12.x",
-                         0.34
-                     ],
-                     [
-                         "v28",
-                         0.24
-                     ],
-                     [
-                         "v27",
-                         0.17
-                     ],
-                     [
-                         "v29",
-                         0.16
-                     ]
-                 ]
-             }]
-         }
-     });
+    series: [{
+      name: "Valuation",
+      colorByPoint: true,
+      data: [{
+        name: "Average P/B Ratio",
+        y: p_b_avg
+      }, {
+        name: "Average P/E Ratio",
+        y: p_e_avg
+      }, {
+        name: "Average P/FCF Ratio",
+        y: p_fcf_avg
+      }, {
+        name: "Average EV/FCF Ratio",
+        y: ev_fcf_avg
+      }, {
+        name: "Average EV/EBITDA Ratio",
+        y: ev_ebitda_avg
+      }]
+    }]
+  });
 }
 
-function marginCharts() {
+function returnRatioCharts(roa_avg, roci_avg, roe_avg) {
+  darkTheme();
   // Create the chart
-     $('#container-margin').highcharts({
-         chart: {
-             type: 'column'
-         },
-         title: {
-             text: 'Browser market shares. January, 2015 to May, 2015'
-         },
-         subtitle: {
-             text: 'Click the columns to view versions. Source: <a href="http://netmarketshare.com">netmarketshare.com</a>.'
-         },
-         xAxis: {
-             type: 'category'
-         },
-         yAxis: {
-             title: {
-                 text: 'Total percent market share'
-             }
+  $('#container-returnRatio').highcharts({
+    chart: {
+      type: 'column'
+    },
+    title: {
+      text: 'Financial Ratios - Trailing Twelve Months'
+    },
+    subtitle: {
+      text: 'Click the columns to view versions. Source: <a href="http://netmarketshare.com">netmarketshare.com</a>.'
+    },
+    xAxis: {
+      type: 'category'
+    },
+    yAxis: {
+      title: {
+        text: 'Average Financial Ratio(%)'
+      }
 
-         },
-         legend: {
-             enabled: false
-         },
-         plotOptions: {
-             series: {
-                 borderWidth: 0,
-                 dataLabels: {
-                     enabled: true,
-                     format: '{point.y:.1f}%'
-                 }
-             }
-         },
+    },
+    legend: {
+      enabled: false
+    },
+    plotOptions: {
+      series: {
+        borderWidth: 0,
+        dataLabels: {
+          enabled: true,
+          format: '{point.y:.1f}%'
+        }
+      }
+    },
 
-         tooltip: {
-             headerFormat: '<span style="font-size:11px">{series.name}</span><br>',
-             pointFormat: '<span style="color:{point.color}">{point.name}</span>: <b>{point.y:.2f}%</b> of total<br/>'
-         },
+    tooltip: {
+      headerFormat: '<span style="font-size:11px">{series.name}</span><br>',
+      pointFormat: '<span style="color:{point.color}">{point.name}</span>: <b>{point.y:.2f}%</b> of total<br/>'
+    },
 
-         series: [{
-             name: "Brands",
-             colorByPoint: true,
-             data: [{
-                 name: "Microsoft Internet Explorer",
-                 y: 56.33,
-                 drilldown: "Microsoft Internet Explorer"
-             }, {
-                 name: "Chrome",
-                 y: 24.03,
-                 drilldown: "Chrome"
-             }, {
-                 name: "Firefox",
-                 y: 10.38,
-                 drilldown: "Firefox"
-             }, {
-                 name: "Safari",
-                 y: 4.77,
-                 drilldown: "Safari"
-             }, {
-                 name: "Opera",
-                 y: 0.91,
-                 drilldown: "Opera"
-             }, {
-                 name: "Proprietary or Undetectable",
-                 y: 0.2,
-                 drilldown: null
-             }]
-         }],
-         drilldown: {
-             series: [{
-                 name: "Microsoft Internet Explorer",
-                 id: "Microsoft Internet Explorer",
-                 data: [
-                     [
-                         "v11.0",
-                         24.13
-                     ],
-                     [
-                         "v8.0",
-                         17.2
-                     ],
-                     [
-                         "v9.0",
-                         8.11
-                     ],
-                     [
-                         "v10.0",
-                         5.33
-                     ],
-                     [
-                         "v6.0",
-                         1.06
-                     ],
-                     [
-                         "v7.0",
-                         0.5
-                     ]
-                 ]
-             }, {
-                 name: "Chrome",
-                 id: "Chrome",
-                 data: [
-                     [
-                         "v40.0",
-                         5
-                     ],
-                     [
-                         "v41.0",
-                         4.32
-                     ],
-                     [
-                         "v42.0",
-                         3.68
-                     ],
-                     [
-                         "v39.0",
-                         2.96
-                     ],
-                     [
-                         "v36.0",
-                         2.53
-                     ],
-                     [
-                         "v43.0",
-                         1.45
-                     ],
-                     [
-                         "v31.0",
-                         1.24
-                     ],
-                     [
-                         "v35.0",
-                         0.85
-                     ],
-                     [
-                         "v38.0",
-                         0.6
-                     ],
-                     [
-                         "v32.0",
-                         0.55
-                     ],
-                     [
-                         "v37.0",
-                         0.38
-                     ],
-                     [
-                         "v33.0",
-                         0.19
-                     ],
-                     [
-                         "v34.0",
-                         0.14
-                     ],
-                     [
-                         "v30.0",
-                         0.14
-                     ]
-                 ]
-             }, {
-                 name: "Firefox",
-                 id: "Firefox",
-                 data: [
-                     [
-                         "v35",
-                         2.76
-                     ],
-                     [
-                         "v36",
-                         2.32
-                     ],
-                     [
-                         "v37",
-                         2.31
-                     ],
-                     [
-                         "v34",
-                         1.27
-                     ],
-                     [
-                         "v38",
-                         1.02
-                     ],
-                     [
-                         "v31",
-                         0.33
-                     ],
-                     [
-                         "v33",
-                         0.22
-                     ],
-                     [
-                         "v32",
-                         0.15
-                     ]
-                 ]
-             }, {
-                 name: "Safari",
-                 id: "Safari",
-                 data: [
-                     [
-                         "v8.0",
-                         2.56
-                     ],
-                     [
-                         "v7.1",
-                         0.77
-                     ],
-                     [
-                         "v5.1",
-                         0.42
-                     ],
-                     [
-                         "v5.0",
-                         0.3
-                     ],
-                     [
-                         "v6.1",
-                         0.29
-                     ],
-                     [
-                         "v7.0",
-                         0.26
-                     ],
-                     [
-                         "v6.2",
-                         0.17
-                     ]
-                 ]
-             }, {
-                 name: "Opera",
-                 id: "Opera",
-                 data: [
-                     [
-                         "v12.x",
-                         0.34
-                     ],
-                     [
-                         "v28",
-                         0.24
-                     ],
-                     [
-                         "v27",
-                         0.17
-                     ],
-                     [
-                         "v29",
-                         0.16
-                     ]
-                 ]
-             }]
-         }
-     });
+    series: [{
+      name: "Ratio",
+      colorByPoint: true,
+      data: [{
+        name: "Average ROA",
+        y: roa_avg
+      }, {
+        name: "Average ROCI",
+        y: roci_avg
+      }, {
+        name: "Average ROE",
+        y: roe_avg
+      }]
+    }]
+  });
 }
-
-function returnRatioCharts() {
-  // Create the chart
-     $('#container-returnRatio').highcharts({
-         chart: {
-             type: 'column'
-         },
-         title: {
-             text: 'Browser market shares. January, 2015 to May, 2015'
-         },
-         subtitle: {
-             text: 'Click the columns to view versions. Source: <a href="http://netmarketshare.com">netmarketshare.com</a>.'
-         },
-         xAxis: {
-             type: 'category'
-         },
-         yAxis: {
-             title: {
-                 text: 'Total percent market share'
-             }
-
-         },
-         legend: {
-             enabled: false
-         },
-         plotOptions: {
-             series: {
-                 borderWidth: 0,
-                 dataLabels: {
-                     enabled: true,
-                     format: '{point.y:.1f}%'
-                 }
-             }
-         },
-
-         tooltip: {
-             headerFormat: '<span style="font-size:11px">{series.name}</span><br>',
-             pointFormat: '<span style="color:{point.color}">{point.name}</span>: <b>{point.y:.2f}%</b> of total<br/>'
-         },
-
-         series: [{
-             name: "Brands",
-             colorByPoint: true,
-             data: [{
-                 name: "Microsoft Internet Explorer",
-                 y: 56.33,
-                 drilldown: "Microsoft Internet Explorer"
-             }, {
-                 name: "Chrome",
-                 y: 24.03,
-                 drilldown: "Chrome"
-             }, {
-                 name: "Firefox",
-                 y: 10.38,
-                 drilldown: "Firefox"
-             }, {
-                 name: "Safari",
-                 y: 4.77,
-                 drilldown: "Safari"
-             }, {
-                 name: "Opera",
-                 y: 0.91,
-                 drilldown: "Opera"
-             }, {
-                 name: "Proprietary or Undetectable",
-                 y: 0.2,
-                 drilldown: null
-             }]
-         }],
-         drilldown: {
-             series: [{
-                 name: "Microsoft Internet Explorer",
-                 id: "Microsoft Internet Explorer",
-                 data: [
-                     [
-                         "v11.0",
-                         24.13
-                     ],
-                     [
-                         "v8.0",
-                         17.2
-                     ],
-                     [
-                         "v9.0",
-                         8.11
-                     ],
-                     [
-                         "v10.0",
-                         5.33
-                     ],
-                     [
-                         "v6.0",
-                         1.06
-                     ],
-                     [
-                         "v7.0",
-                         0.5
-                     ]
-                 ]
-             }, {
-                 name: "Chrome",
-                 id: "Chrome",
-                 data: [
-                     [
-                         "v40.0",
-                         5
-                     ],
-                     [
-                         "v41.0",
-                         4.32
-                     ],
-                     [
-                         "v42.0",
-                         3.68
-                     ],
-                     [
-                         "v39.0",
-                         2.96
-                     ],
-                     [
-                         "v36.0",
-                         2.53
-                     ],
-                     [
-                         "v43.0",
-                         1.45
-                     ],
-                     [
-                         "v31.0",
-                         1.24
-                     ],
-                     [
-                         "v35.0",
-                         0.85
-                     ],
-                     [
-                         "v38.0",
-                         0.6
-                     ],
-                     [
-                         "v32.0",
-                         0.55
-                     ],
-                     [
-                         "v37.0",
-                         0.38
-                     ],
-                     [
-                         "v33.0",
-                         0.19
-                     ],
-                     [
-                         "v34.0",
-                         0.14
-                     ],
-                     [
-                         "v30.0",
-                         0.14
-                     ]
-                 ]
-             }, {
-                 name: "Firefox",
-                 id: "Firefox",
-                 data: [
-                     [
-                         "v35",
-                         2.76
-                     ],
-                     [
-                         "v36",
-                         2.32
-                     ],
-                     [
-                         "v37",
-                         2.31
-                     ],
-                     [
-                         "v34",
-                         1.27
-                     ],
-                     [
-                         "v38",
-                         1.02
-                     ],
-                     [
-                         "v31",
-                         0.33
-                     ],
-                     [
-                         "v33",
-                         0.22
-                     ],
-                     [
-                         "v32",
-                         0.15
-                     ]
-                 ]
-             }, {
-                 name: "Safari",
-                 id: "Safari",
-                 data: [
-                     [
-                         "v8.0",
-                         2.56
-                     ],
-                     [
-                         "v7.1",
-                         0.77
-                     ],
-                     [
-                         "v5.1",
-                         0.42
-                     ],
-                     [
-                         "v5.0",
-                         0.3
-                     ],
-                     [
-                         "v6.1",
-                         0.29
-                     ],
-                     [
-                         "v7.0",
-                         0.26
-                     ],
-                     [
-                         "v6.2",
-                         0.17
-                     ]
-                 ]
-             }, {
-                 name: "Opera",
-                 id: "Opera",
-                 data: [
-                     [
-                         "v12.x",
-                         0.34
-                     ],
-                     [
-                         "v28",
-                         0.24
-                     ],
-                     [
-                         "v27",
-                         0.17
-                     ],
-                     [
-                         "v29",
-                         0.16
-                     ]
-                 ]
-             }]
-         }
-     });
-}
-
-
-
-
-
-
-
-
-
-
-
-

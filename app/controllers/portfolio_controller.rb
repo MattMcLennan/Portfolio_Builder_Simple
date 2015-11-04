@@ -65,10 +65,6 @@ class PortfolioController < ApplicationController
         @stock[:roci] = i.next.text.to_f
       elsif i.text == "Return on Assets (ROA)"
         @stock[:roa] = i.next.text.to_f
-      elsif i.text == "EBITDA Margin - LTM"
-        @stock[:ebitda_margin] = i.next.text.to_f
-      elsif i.text == "Net Profit Margin"
-        @stock[:net_profit_margin] = i.next.text.to_f
       end
     end
     
