@@ -72,6 +72,7 @@ $(function() {
       mktCapCharts(mkt_cap);
       valuationCharts(p_b_avg, p_e_avg, p_fcf_avg, ev_fcf_avg, ev_ebitda_avg);
       returnRatioCharts(roa_avg, roci_avg, roe_avg);
+      $('.charts').css("display","block");
 
     }
 

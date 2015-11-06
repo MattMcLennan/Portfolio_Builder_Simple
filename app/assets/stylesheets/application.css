@@ -34,7 +34,7 @@ h1 {
   font-family: Georgia, serif; 
   color: #CFCFCF;
   position: absolute;
-  top: 15%;
+  top: 33px;
 }
 
 .menu {
@@ -74,7 +74,6 @@ input[type="text"] {
   width: 80%;
   margin: 0 auto;
   min-height: 500px;
-  border: outset 5px #0066CC;
   position: relative;
 }
 
@@ -83,21 +82,7 @@ img {
   height: 100%;
 }
 
-/*Add these classes in with jQuery*/
-.portfolio-banner {
-  min-height: 70px;
-  color: black;
-  background-color: orange;
-  position: absolute;
-  display: block;
-  width: 100%;
-  border-bottom: double 5px black;
-}
-
-.portfolio-banner h2 {
-  margin-left: 2%;
-  font-family: Georgia, serif;
-  font-weight: 100;
-  letter-spacing: -1px;
+.charts {
+  display: none;
 }
 
