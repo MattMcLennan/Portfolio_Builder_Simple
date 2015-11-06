@@ -50,6 +50,10 @@ nav .brand-logo.left {
 .row {
   margin-top: 10px;
 }
+
+.progress {
+  display: none;
+}
     
 
 /*html, body {
