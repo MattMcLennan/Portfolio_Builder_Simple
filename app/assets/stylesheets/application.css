@@ -14,7 +14,45 @@
  *= require_self
  */
 
-html, body {
+nav {
+  height: 100px;
+  line-height: 100px;
+}
+
+nav .brand-logo.left {
+  left: 2rem;
+}
+
+/* label focus color */
+.input-field input[type=text]:focus + label {
+ color: #64b5f6;
+}
+/* label underline focus color */
+.input-field input[type=text]:focus {
+ border-bottom: 1px solid #64b5f6;
+ box-shadow: 0 1px 0 0 #64b5f6;
+}
+/* valid color */
+.input-field input[type=text].valid {
+ border-bottom: 1px solid #64b5f6;
+ box-shadow: 0 1px 0 0 #64b5f6;
+}
+/* invalid color */
+.input-field input[type=text].invalid {
+ border-bottom: 1px solid #64b5f6;
+ box-shadow: 0 1px 0 0 #64b5f6;
+}
+/* icon prefix focus color */
+.input-field .prefix.active {
+ color: #64b5f6;
+}
+
+.row {
+  margin-top: 10px;
+}
+    
+
+/*html, body {
   width: 100%;
   margin: 0;
   height: 100%;
@@ -88,3 +126,4 @@ img {
 
 
 
+*/
