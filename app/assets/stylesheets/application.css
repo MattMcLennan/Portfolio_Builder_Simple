@@ -54,4 +54,11 @@ nav .brand-logo.left {
 .progress {
   display: none;
 }
-    
+
+.pie-charts {
+  display: inline-block;
+}
+
+.bar-charts {
+  display: inline-block;
+}
