@@ -61,5 +61,5 @@ nav .brand-logo.left {
 
 .pie-charts-row, .bar-charts-row {
   position: relative;
-  left: calc(50% - 310px);
+  left: calc(50% - 600px);
 }
