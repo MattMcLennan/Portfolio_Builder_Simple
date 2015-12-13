@@ -55,10 +55,11 @@ nav .brand-logo.left {
   display: none;
 }
 
-.pie-charts {
+.pie-charts, .bar-charts {
   display: inline-block;
 }
 
-.bar-charts {
-  display: inline-block;
+.pie-charts-row, .bar-charts-row {
+  position: relative;
+  left: calc(50% - 310px);
 }
